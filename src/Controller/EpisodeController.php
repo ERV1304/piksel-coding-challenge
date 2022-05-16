@@ -19,7 +19,7 @@ class EpisodeController extends AbstractController
     }
 
     /**
-     * @Route("/episodes", name="app_episode")
+     * @Route("/royaltymanager/episodes", name="app_episode")
      */
     public function index(): Response
     {
@@ -41,23 +41,21 @@ class EpisodeController extends AbstractController
     }
 
     /**
-     * @Route("/episode", name="episode_new", methods={"POST"})
+     * @Route("/royaltymanager/episode", name="episode_new", methods={"POST"})
      */
     public function new(Request $request): Response
     {
-        $entityManager = $this->em->getManager();
- 
         $episode = new Episode();
         $episode->setName($request->request->get('name'));
  
-        $entityManager->persist($episode);
-        $entityManager->flush();
+        $this->em->persist($episode);
+        $this->em->flush();
  
         return $this->json('Created new episode successfully with id ' . $episode->getId());
     }
 
     /**
-     * @Route("/episode/{id}", name="episode_show", methods={"GET"})
+     * @Route("/royaltymanager/episode/{id}", name="episode_show", methods={"GET"})
      */
     public function show(int $id): Response
     {
@@ -79,7 +77,7 @@ class EpisodeController extends AbstractController
     }
 
     /**
-     * @Route("/episodesOwned/{studioId}", name="episodeOwned_show", methods={"GET"})
+     * @Route("/royaltymanager/episodesOwned/{studioId}", name="episodeOwned_show", methods={"GET"})
      */
     public function showOwned(int $studioId): Response
     {
@@ -107,19 +105,18 @@ class EpisodeController extends AbstractController
     }
 
     /**
-     * @Route("/episode/{id}", name="episode_edit", methods={"PUT"})
+     * @Route("/royaltymanager/episode/{id}", name="episode_edit", methods={"PUT"})
      */
     public function edit(Request $request, int $id): Response
     {
-        $entityManager = $this->em->getManager();
-        $episode = $entityManager->getRepository(Episode::class)->find($id);
+        $episode = $this->em->getRepository(Episode::class)->find($id);
  
         if (!$episode) {
             return $this->json('No episode found for id' . $id, 404);
         }
  
         $episode->setName($request->request->get('name'));
-        $entityManager->flush();
+        $this->em->flush();
  
         $data =  [
             'id' => $episode->getId(),
@@ -130,19 +127,18 @@ class EpisodeController extends AbstractController
     }
 
     /**
-     * @Route("/episode/{id}", name="episode_delete", methods={"DELETE"})
+     * @Route("/royaltymanager/episode/{id}", name="episode_delete", methods={"DELETE"})
      */
     public function delete(int $id): Response
     {
-        $entityManager = $this->em->getManager();
-        $episode = $entityManager->getRepository(Episode::class)->find($id);
+        $episode = $this->em->getRepository(Episode::class)->find($id);
  
         if (!$episode) {
             return $this->json('No episode found for id' . $id, 404);
         }
  
-        $entityManager->remove($episode);
-        $entityManager->flush();
+        $this->em->remove($episode);
+        $this->em->flush();
  
         return $this->json('Deleted a episode successfully with id ' . $id);
     }

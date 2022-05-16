@@ -20,7 +20,7 @@ class RightsownerController extends AbstractController
     }
 
     /**
-     * @Route("/rightsowners", name="app_rightsowner")
+     * @Route("/royaltymanager/rightsowners", name="app_rightsowner")
      */
     public function index(): Response
     {
@@ -47,10 +47,9 @@ class RightsownerController extends AbstractController
      */
     public function new(Request $request): Response
     {
-        $entityManager = $this->em->getManager();
 
         $episodeId = $request->request->get('episode');
-        $episode = $entityManager->getRepository(Episode::class)->find($episodeId);
+        $episode = $this->em->getRepository(Episode::class)->find($episodeId);
  
         if (!$episode) {
             return $this->json('No episode found for id' . $episodeId, 404);
@@ -58,7 +57,7 @@ class RightsownerController extends AbstractController
 
         $studioId = $request->request->get('studio');
         
-        $studio = $entityManager->getRepository(Studio::class)->find($studioId);
+        $studio = $this->em->getRepository(Studio::class)->find($studioId);
 
         if (!$studio) {
             return $this->json('No studio found for id' . $studioId, 404);
@@ -68,14 +67,14 @@ class RightsownerController extends AbstractController
         $rightsowner->setEpisode($episode);
         $rightsowner->setStudio($studio);
  
-        $entityManager->persist($rightsowner);
-        $entityManager->flush();
+        $this->em->persist($rightsowner);
+        $this->em->flush();
  
         return $this->json('Created new rightsowner successfully with id ' . $rightsowner->getId());
     }
 
     /**
-     * @Route("/rightsowner/{id}", name="rightsowner_show", methods={"GET"})
+     * @Route("/royaltymanager/rightsowner/{id}", name="rightsowner_show", methods={"GET"})
      */
     public function show(int $id): Response
     {
@@ -98,21 +97,20 @@ class RightsownerController extends AbstractController
     }
 
     /**
-     * @Route("/rightsowner/{id}", name="rightsowner_edit", methods={"PUT"})
+     * @Route("/royaltymanager/rightsowner/{id}", name="rightsowner_edit", methods={"PUT"})
      */
     public function edit(Request $request, int $id): Response
     {
-        $entityManager = $this->em->getManager();
-        $rightsowner = $entityManager->getRepository(Rightsowner::class)->find($id);
+        $rightsowner = $this->em->getRepository(Rightsowner::class)->find($id);
  
         if (!$rightsowner) {
             return $this->json('No rightsowner found for id' . $id, 404);
         }
 
-        $entityManager = $this->em->getManager();
+        $this->em = $this->em->getManager();
 
         $episodeId = $request->request->get('episode');
-        $episode = $entityManager->getRepository(Episode::class)->find($episodeId);
+        $episode = $this->em->getRepository(Episode::class)->find($episodeId);
  
         if (!$episode) {
             return $this->json('No episode found for id' . $episodeId, 404);
@@ -120,7 +118,7 @@ class RightsownerController extends AbstractController
 
         $studioId = $request->request->get('studio');
         
-        $studio = $entityManager->getRepository(Studio::class)->find($studioId);
+        $studio = $this->em->getRepository(Studio::class)->find($studioId);
 
         if (!$studio) {
             return $this->json('No studio found for id' . $studioId, 404);
@@ -128,7 +126,7 @@ class RightsownerController extends AbstractController
  
         $rightsowner->setEpisode($episodeId);
         $rightsowner->setStudio($studioId);
-        $entityManager->flush();
+        $this->em->flush();
  
         $data =  [
             'id' => $rightsowner->getId(),
@@ -140,19 +138,18 @@ class RightsownerController extends AbstractController
     }
 
     /**
-     * @Route("/rightsowner/{id}", name="rightsowner_delete", methods={"DELETE"})
+     * @Route("/royaltymanager/rightsowner/{id}", name="rightsowner_delete", methods={"DELETE"})
      */
     public function delete(int $id): Response
     {
-        $entityManager = $this->em->getManager();
-        $rightsowner = $entityManager->getRepository(Rightsowner::class)->find($id);
+        $rightsowner = $this->em->getRepository(Rightsowner::class)->find($id);
  
         if (!$rightsowner) {
             return $this->json('No rightsowner found for id' . $id, 404);
         }
  
-        $entityManager->remove($rightsowner);
-        $entityManager->flush();
+        $this->em->remove($rightsowner);
+        $this->em->flush();
  
         return $this->json('Deleted a rightsowner successfully with id ' . $id);
     }

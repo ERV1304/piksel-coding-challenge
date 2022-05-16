@@ -18,7 +18,7 @@ class StudioController extends AbstractController
     }
 
     /**
-     * @Route("/studios", name="app_studio")
+     * @Route("/royaltymanager/studios", name="app_studio")
      */
     public function index(): Response
     {
@@ -40,23 +40,22 @@ class StudioController extends AbstractController
     }
 
     /**
-     * @Route("/studio", name="studio_new", methods={"POST"})
+     * @Route("/royaltymanager/studio", name="studio_new", methods={"POST"})
      */
     public function new(Request $request): Response
     {
-        $entityManager = $this->em->getManager();
  
         $studio = new Studio();
         $studio->setName($request->request->get('name'));
  
-        $entityManager->persist($studio);
-        $entityManager->flush();
+        $this->em->persist($studio);
+        $this->em->flush();
  
         return $this->json('Created new studio successfully with id ' . $studio->getId());
     }
 
     /**
-     * @Route("/studio/{id}", name="studio_show", methods={"GET"})
+     * @Route("/royaltymanager/studio/{id}", name="studio_show", methods={"GET"})
      */
     public function show(int $id): Response
     {
@@ -78,19 +77,18 @@ class StudioController extends AbstractController
     }
 
     /**
-     * @Route("/studio/{id}", name="studio_edit", methods={"PUT"})
+     * @Route("/royaltymanager/studio/{id}", name="studio_edit", methods={"PUT"})
      */
     public function edit(Request $request, int $id): Response
     {
-        $entityManager = $this->em->getManager();
-        $studio = $entityManager->getRepository(Studio::class)->find($id);
+        $studio = $this->em->getRepository(Studio::class)->find($id);
  
         if (!$studio) {
             return $this->json('No studio found for id' . $id, 404);
         }
  
         $studio->setName($request->request->get('name'));
-        $entityManager->flush();
+        $this->em->flush();
  
         $data =  [
             'id' => $studio->getId(),
@@ -101,19 +99,18 @@ class StudioController extends AbstractController
     }
 
     /**
-     * @Route("/studio/{id}", name="studio_delete", methods={"DELETE"})
+     * @Route("/royaltymanager/studio/{id}", name="studio_delete", methods={"DELETE"})
      */
     public function delete(int $id): Response
     {
-        $entityManager = $this->em->getManager();
-        $studio = $entityManager->getRepository(Studio::class)->find($id);
+        $studio = $this->em->getRepository(Studio::class)->find($id);
  
         if (!$studio) {
             return $this->json('No studio found for id' . $id, 404);
         }
  
-        $entityManager->remove($studio);
-        $entityManager->flush();
+        $this->em->remove($studio);
+        $this->em->flush();
  
         return $this->json('Deleted a studio successfully with id ' . $id);
     }

@@ -20,7 +20,7 @@ class ViewingController extends AbstractController
     }
 
     /**
-     * @Route("/viewings", name="app_viewing")
+     * @Route("/royaltymanager/viewings", name="app_viewing")
      */
     public function index(): Response
     {
@@ -44,7 +44,7 @@ class ViewingController extends AbstractController
     }
 
     /**
-     * @Route("/reset", name="viewing_reset", methods={"POST"})
+     * @Route("/royaltymanager/reset", name="viewing_reset", methods={"POST"})
      */
     public function reset(): Response
     {
@@ -60,35 +60,33 @@ class ViewingController extends AbstractController
     }
 
     /**
-     * @Route("/viewing", name="viewing_new", methods={"POST"})
+     * @Route("/royaltymanager/viewing", name="viewing_new", methods={"POST"})
      */
     public function new(Request $request): Response
     {
-        $entityManager = $this->em->getManager();
-
         $episodeId = $request->request->get('episode');
-        $episode = $entityManager->getRepository(Episode::class)->find($episodeId);
+        $episode = $this->em->getRepository(Episode::class)->find($episodeId);
  
         if (!$episode) {
             return $this->json('No episode found for id' . $episodeId, 404);
         }
 
         $customerId = $request->request->get('customer');
-        $customer = $entityManager->getRepository(Customer::class)->find($customerId);
+        $customer = $this->em->getRepository(Customer::class)->find($customerId);
  
         $viewing = new Viewing();
         $viewing->setEpisode($episode);
         $viewing->setCustomer($customer);
         $viewing->setDate(new \DateTime());
  
-        $entityManager->persist($viewing);
-        $entityManager->flush();
+        $this->em->persist($viewing);
+        $this->em->flush();
  
         return $this->json('Created new viewing successfully with id ' . $viewing->getId(), 202);
     }
 
     /**
-     * @Route("/viewings/{episodeId}", name="viewings_show", methods={"GET"})
+     * @Route("/royaltymanager/viewings/{episodeId}", name="viewings_show", methods={"GET"})
      */
     public function showViewings(int $episodeId): Response
     {
@@ -116,19 +114,18 @@ class ViewingController extends AbstractController
     }
 
     /**
-     * @Route("/viewing/{id}", name="viewing", methods={"DELETE"})
+     * @Route("/royaltymanager/viewing/{id}", name="viewing", methods={"DELETE"})
      */
     public function delete(int $id): Response
     {
-        $entityManager = $this->em->getManager();
-        $viewing = $entityManager->getRepository(Viewing::class)->find($id);
+        $viewing = $this->em->getRepository(Viewing::class)->find($id);
  
         if (!$viewing) {
             return $this->json('No viewing found for id' . $id, 404);
         }
  
-        $entityManager->remove($viewing);
-        $entityManager->flush();
+        $this->em->remove($viewing);
+        $this->emntity->flush();
  
         return $this->json('Deleted a viewing successfully with id ' . $id);
     }

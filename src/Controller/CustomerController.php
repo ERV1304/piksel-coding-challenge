@@ -18,7 +18,7 @@ class CustomerController extends AbstractController
     }
 
     /**
-     * @Route("/customers", name="app_customer")
+     * @Route("/royaltymanager/customers", name="app_customer")
      */
     public function index(): Response
     {
@@ -43,20 +43,18 @@ class CustomerController extends AbstractController
      * @Route("/customer", name="customer_new", methods={"POST"})
      */
     public function new(Request $request): Response
-    {
-        $entityManager = $this->em->getManager();
- 
+    { 
         $customer = new Customer();
         $customer->setDescription($request->request->get('description'));
  
-        $entityManager->persist($customer);
-        $entityManager->flush();
+        $this->em->persist($customer);
+        $this->em->flush();
  
         return $this->json('Created new customer successfully with id ' . $customer->getId());
     }
 
     /**
-     * @Route("/customer/{id}", name="customer_show", methods={"GET"})
+     * @Route("/royaltymanager/customer/{id}", name="customer_show", methods={"GET"})
      */
     public function show(int $id): Response
     {
@@ -78,19 +76,18 @@ class CustomerController extends AbstractController
     }
 
     /**
-     * @Route("/customer/{id}", name="customer_edit", methods={"PUT"})
+     * @Route("/royaltymanager/customer/{id}", name="customer_edit", methods={"PUT"})
      */
     public function edit(Request $request, int $id): Response
     {
-        $entityManager = $this->em->getManager();
-        $customer = $entityManager->getRepository(Customer::class)->find($id);
+        $customer = $this->em->getRepository(Customer::class)->find($id);
  
         if (!$customer) {
             return $this->json('No customer found for id' . $id, 404);
         }
  
         $customer->setDescription($request->request->get('description'));
-        $entityManager->flush();
+        $this->em->flush();
  
         $data =  [
             'id' => $customer->getId(),
@@ -105,15 +102,14 @@ class CustomerController extends AbstractController
      */
     public function delete(int $id): Response
     {
-        $entityManager = $this->em->getManager();
-        $customer = $entityManager->getRepository(Customer::class)->find($id);
+        $customer = $this->em->getRepository(Customer::class)->find($id);
  
         if (!$customer) {
             return $this->json('No customer found for id' . $id, 404);
         }
  
-        $entityManager->remove($customer);
-        $entityManager->flush();
+        $this->em->remove($customer);
+        $this->em->flush();
  
         return $this->json('Deleted a customer successfully with id ' . $id);
     }

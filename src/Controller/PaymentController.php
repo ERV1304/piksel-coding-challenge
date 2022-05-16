@@ -20,7 +20,7 @@ class PaymentController extends AbstractController
     }
 
     /**
-     * @Route("/payments", name="app_payment")
+     * @Route("/royaltymanager/payments", name="app_payment")
      */
     public function index(): Response
     {
@@ -58,7 +58,7 @@ class PaymentController extends AbstractController
 
 
     /**
-     * @Route("/payment/{studioId}", name="payment_show", methods={"GET"})
+     * @Route("/royaltymanager/payment/{studioId}", name="payment_show", methods={"GET"})
      */
     public function show(int $studioId): Response
     {

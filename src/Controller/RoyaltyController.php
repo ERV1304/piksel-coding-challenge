@@ -19,7 +19,7 @@ class RoyaltyController extends AbstractController
     }
 
     /**
-     * @Route("/royalties", name="app_royalty")
+     * @Route("/royaltymanager/royalties", name="app_royalty")
      */
     public function index(): Response
     {
@@ -42,28 +42,26 @@ class RoyaltyController extends AbstractController
     }
 
     /**
-     * @Route("/royalty", name="royalty_new", methods={"POST"})
+     * @Route("/royaltymanager/royalty", name="royalty_new", methods={"POST"})
      */
     public function new(Request $request): Response
     {
-        $entityManager = $this->em->getManager();
-
         $studioId = $request->request->get('studio');
         
-        $studio = $entityManager->getRepository(Studio::class)->find($studioId);
+        $studio = $this->em->getRepository(Studio::class)->find($studioId);
  
         $royalty = new Royalty();
         $royalty->setStudio($studio);
         $royalty->setPayment($request->request->get('payment'));
  
-        $entityManager->persist($royalty);
-        $entityManager->flush();
+        $this->em->persist($royalty);
+        $this->em->flush();
  
         return $this->json('Created new royalty successfully with id ' . $royalty->getId());
     }
 
     /**
-     * @Route("/royalty/{studioId}", name="royalty_show", methods={"GET"})
+     * @Route("/royaltymanager/royalty/{studioId}", name="royalty_show", methods={"GET"})
      */
     public function show(int $studioId): Response
     {
@@ -86,19 +84,18 @@ class RoyaltyController extends AbstractController
     }
 
     /**
-     * @Route("/royalty/{id}", name="royalty_delete", methods={"DELETE"})
+     * @Route("/royaltymanager/royalty/{id}", name="royalty_delete", methods={"DELETE"})
      */
     public function delete(int $id): Response
     {
-        $entityManager = $this->em->getManager();
-        $royalty = $entityManager->getRepository(Royalty::class)->find($id);
+        $royalty = $this->em->getRepository(Royalty::class)->find($id);
  
         if (!$royalty) {
             return $this->json('No royalty found for id' . $id, 404);
         }
  
-        $entityManager->remove($royalty);
-        $entityManager->flush();
+        $this->em->remove($royalty);
+        $this->em->flush();
  
         return $this->json('Deleted a royalty successfully with id ' . $id);
     }
