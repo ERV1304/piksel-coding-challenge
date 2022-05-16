@@ -54,13 +54,15 @@ class ViewingRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?Viewing
-//    {
-//        return $this->createQueryBuilder('v')
-//            ->andWhere('v.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function findViewingsByEpisode($value): array
+    {
+        return $this->createQueryBuilder('v')
+            ->andWhere('v.Episode = :val')
+            ->setParameter('val', $value)
+            ->orderBy('v.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
 }

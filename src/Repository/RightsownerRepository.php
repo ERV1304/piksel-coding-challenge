@@ -54,13 +54,14 @@ class RightsownerRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?Rightsowner
-//    {
-//        return $this->createQueryBuilder('r')
-//            ->andWhere('r.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function findEpisodesOwnedByStudio($value): array
+    {
+        return $this->createQueryBuilder('r')
+            ->andWhere('r.Studio = :val')
+            ->setParameter('val', $value)
+            ->orderBy('r.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }
