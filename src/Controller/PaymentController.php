@@ -7,29 +7,36 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Royalty;
 use App\Entity\Viewing;
 
 class PaymentController extends AbstractController
 {
+
+    public function __construct(EntityManagerInterface $em)
+    {
+        $this->em = $em;
+    }
+
     /**
      * @Route("/payments", name="app_payment")
      */
     public function index(): Response
     {
-        $royalties = $this->getDoctrine()
+        $royalties = $this->em
             ->getRepository(Royalty::class)
             ->findAll();
 
         $data = [];
 
         foreach ($royalties as $royalty) {
-            $episodesOwned = $this->getDoctrine()
+            $episodesOwned = $this->em
             ->getRepository(Rightsowner::class)
             ->findEpisodesOwnedByStudio($royalty->getStudio()->getId());
 
             foreach ($episodesOwned as $episode) {
-                $viewings = $this->getDoctrine()
+                $viewings = $this->em
                 ->getRepository(Viewing::class)
                 ->findViewingsByEpisode($episode->getId());
 
@@ -55,7 +62,7 @@ class PaymentController extends AbstractController
      */
     public function show(int $studioId): Response
     {
-        $royalty = $this->getDoctrine()
+        $royalty = $this->em
             ->getRepository(Royalty::class)
             ->findRoyaltyByStudio($studioId);
  
@@ -64,12 +71,12 @@ class PaymentController extends AbstractController
             return $this->json('No royalty found for studio id ' . $studioId, 404);
         }
 
-        $episodesOwned = $this->getDoctrine()
+        $episodesOwned = $this->em
         ->getRepository(Rightsowner::class)
         ->findEpisodesOwnedByStudio($royalty->getStudio()->getId());
  
         foreach ($episodesOwned as $episode) {
-            $viewings = $this->getDoctrine()
+            $viewings = $this->em
             ->getRepository(Viewing::class)
             ->findViewingsByEpisode($episode->getId());
 

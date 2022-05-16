@@ -6,16 +6,23 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Customer;
 
 class CustomerController extends AbstractController
 {
+
+    public function __construct(EntityManagerInterface $em)
+    {
+        $this->em = $em;
+    }
+
     /**
      * @Route("/customers", name="app_customer")
      */
     public function index(): Response
     {
-        $customers = $this->getDoctrine()
+        $customers = $this->em
             ->getRepository(Customer::class)
             ->findAll();
  
@@ -37,7 +44,7 @@ class CustomerController extends AbstractController
      */
     public function new(Request $request): Response
     {
-        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager = $this->em->getManager();
  
         $customer = new Customer();
         $customer->setDescription($request->request->get('description'));
@@ -53,7 +60,7 @@ class CustomerController extends AbstractController
      */
     public function show(int $id): Response
     {
-        $customer = $this->getDoctrine()
+        $customer = $this->em
             ->getRepository(Customer::class)
             ->find($id);
  
@@ -75,7 +82,7 @@ class CustomerController extends AbstractController
      */
     public function edit(Request $request, int $id): Response
     {
-        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager = $this->em->getManager();
         $customer = $entityManager->getRepository(Customer::class)->find($id);
  
         if (!$customer) {
@@ -98,7 +105,7 @@ class CustomerController extends AbstractController
      */
     public function delete(int $id): Response
     {
-        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager = $this->em->getManager();
         $customer = $entityManager->getRepository(Customer::class)->find($id);
  
         if (!$customer) {

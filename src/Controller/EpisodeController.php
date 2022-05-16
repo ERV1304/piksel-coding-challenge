@@ -6,17 +6,24 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Episode;
 use App\Entity\Rightsowner;
 
 class EpisodeController extends AbstractController
 {
+
+    public function __construct(EntityManagerInterface $em)
+    {
+        $this->em = $em;
+    }
+
     /**
      * @Route("/episodes", name="app_episode")
      */
     public function index(): Response
     {
-        $episodes = $this->getDoctrine()
+        $episodes = $this->em
             ->getRepository(Episode::class)
             ->findAll();
  
@@ -38,7 +45,7 @@ class EpisodeController extends AbstractController
      */
     public function new(Request $request): Response
     {
-        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager = $this->em->getManager();
  
         $episode = new Episode();
         $episode->setName($request->request->get('name'));
@@ -54,7 +61,7 @@ class EpisodeController extends AbstractController
      */
     public function show(int $id): Response
     {
-        $episode = $this->getDoctrine()
+        $episode = $this->em
             ->getRepository(Episode::class)
             ->find($id);
  
@@ -76,7 +83,7 @@ class EpisodeController extends AbstractController
      */
     public function showOwned(int $studioId): Response
     {
-        $episodesOwned = $this->getDoctrine()
+        $episodesOwned = $this->em
             ->getRepository(Rightsowner::class)
             ->findEpisodesOwnedByStudio($studioId);
  
@@ -86,7 +93,7 @@ class EpisodeController extends AbstractController
         }
  
         foreach ($episodesOwned as $episodeOwned) {
-            $episode = $this->getDoctrine()
+            $episode = $this->em
             ->getRepository(Episode::class)
             ->find($episodeOwned->getId());
 
@@ -104,7 +111,7 @@ class EpisodeController extends AbstractController
      */
     public function edit(Request $request, int $id): Response
     {
-        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager = $this->em->getManager();
         $episode = $entityManager->getRepository(Episode::class)->find($id);
  
         if (!$episode) {
@@ -127,7 +134,7 @@ class EpisodeController extends AbstractController
      */
     public function delete(int $id): Response
     {
-        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager = $this->em->getManager();
         $episode = $entityManager->getRepository(Episode::class)->find($id);
  
         if (!$episode) {

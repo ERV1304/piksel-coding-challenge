@@ -6,16 +6,23 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Studio;
 
 class StudioController extends AbstractController
 {
+
+    public function __construct(EntityManagerInterface $em)
+    {
+        $this->em = $em;
+    }
+
     /**
      * @Route("/studios", name="app_studio")
      */
     public function index(): Response
     {
-        $studios = $this->getDoctrine()
+        $studios = $this->em
             ->getRepository(Studio::class)
             ->findAll();
  
@@ -37,7 +44,7 @@ class StudioController extends AbstractController
      */
     public function new(Request $request): Response
     {
-        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager = $this->em->getManager();
  
         $studio = new Studio();
         $studio->setName($request->request->get('name'));
@@ -53,7 +60,7 @@ class StudioController extends AbstractController
      */
     public function show(int $id): Response
     {
-        $studio = $this->getDoctrine()
+        $studio = $this->em
             ->getRepository(Studio::class)
             ->find($id);
  
@@ -75,7 +82,7 @@ class StudioController extends AbstractController
      */
     public function edit(Request $request, int $id): Response
     {
-        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager = $this->em->getManager();
         $studio = $entityManager->getRepository(Studio::class)->find($id);
  
         if (!$studio) {
@@ -98,7 +105,7 @@ class StudioController extends AbstractController
      */
     public function delete(int $id): Response
     {
-        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager = $this->em->getManager();
         $studio = $entityManager->getRepository(Studio::class)->find($id);
  
         if (!$studio) {

@@ -6,18 +6,25 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Rightsowner;
 use App\Entity\Episode;
 use App\Entity\Studio;
 
 class RightsownerController extends AbstractController
 {
+
+    public function __construct(EntityManagerInterface $em)
+    {
+        $this->em = $em;
+    }
+
     /**
      * @Route("/rightsowners", name="app_rightsowner")
      */
     public function index(): Response
     {
-        $rightsowners = $this->getDoctrine()
+        $rightsowners = $this->em
             ->getRepository(Rightsowner::class)
             ->findAll();
  
@@ -40,7 +47,7 @@ class RightsownerController extends AbstractController
      */
     public function new(Request $request): Response
     {
-        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager = $this->em->getManager();
 
         $episodeId = $request->request->get('episode');
         $episode = $entityManager->getRepository(Episode::class)->find($episodeId);
@@ -72,7 +79,7 @@ class RightsownerController extends AbstractController
      */
     public function show(int $id): Response
     {
-        $rightsowner = $this->getDoctrine()
+        $rightsowner = $this->em
             ->getRepository(Rightsowner::class)
             ->find($id);
  
@@ -95,14 +102,14 @@ class RightsownerController extends AbstractController
      */
     public function edit(Request $request, int $id): Response
     {
-        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager = $this->em->getManager();
         $rightsowner = $entityManager->getRepository(Rightsowner::class)->find($id);
  
         if (!$rightsowner) {
             return $this->json('No rightsowner found for id' . $id, 404);
         }
 
-        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager = $this->em->getManager();
 
         $episodeId = $request->request->get('episode');
         $episode = $entityManager->getRepository(Episode::class)->find($episodeId);
@@ -137,7 +144,7 @@ class RightsownerController extends AbstractController
      */
     public function delete(int $id): Response
     {
-        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager = $this->em->getManager();
         $rightsowner = $entityManager->getRepository(Rightsowner::class)->find($id);
  
         if (!$rightsowner) {

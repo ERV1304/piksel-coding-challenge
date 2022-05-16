@@ -6,18 +6,25 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Viewing;
 use App\Entity\Episode;
 use App\Entity\Customer;
 
 class ViewingController extends AbstractController
 {
+
+    public function __construct(EntityManagerInterface $em)
+    {
+        $this->em = $em;
+    }
+
     /**
      * @Route("/viewings", name="app_viewing")
      */
     public function index(): Response
     {
-        $viewings = $this->getDoctrine()
+        $viewings = $this->em
             ->getRepository(Viewing::class)
             ->findAll();
  
@@ -39,9 +46,9 @@ class ViewingController extends AbstractController
     /**
      * @Route("/reset", name="viewing_reset", methods={"POST"})
      */
-    public function reset(): Bool
+    public function reset(): Response
     {
-        $viewings = $this->getDoctrine()
+        $viewings = $this->em
             ->getRepository(Viewing::class)
             ->findAll();
  
@@ -49,7 +56,7 @@ class ViewingController extends AbstractController
            $this->delete($viewing->getId());
         }
  
-        return true;
+        return $this->json(null,202);
     }
 
     /**
@@ -57,7 +64,7 @@ class ViewingController extends AbstractController
      */
     public function new(Request $request): Response
     {
-        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager = $this->em->getManager();
 
         $episodeId = $request->request->get('episode');
         $episode = $entityManager->getRepository(Episode::class)->find($episodeId);
@@ -77,7 +84,7 @@ class ViewingController extends AbstractController
         $entityManager->persist($viewing);
         $entityManager->flush();
  
-        return $this->json('Created new viewing successfully with id ' . $viewing->getId());
+        return $this->json('Created new viewing successfully with id ' . $viewing->getId(), 202);
     }
 
     /**
@@ -85,7 +92,7 @@ class ViewingController extends AbstractController
      */
     public function showViewings(int $episodeId): Response
     {
-        $viewings = $this->getDoctrine()
+        $viewings = $this->em
             ->getRepository(Viewing::class)
             ->findViewingsByEpisode($episodeId);
 
@@ -95,7 +102,7 @@ class ViewingController extends AbstractController
         }
 
         foreach ($viewings as $viewing) {
-            $episode = $this->getDoctrine()
+            $episode = $this->em
             ->getRepository(Episode::class)
             ->find($viewing->getEpisode());
 
@@ -113,7 +120,7 @@ class ViewingController extends AbstractController
      */
     public function delete(int $id): Response
     {
-        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager = $this->em->getManager();
         $viewing = $entityManager->getRepository(Viewing::class)->find($id);
  
         if (!$viewing) {

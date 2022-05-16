@@ -6,17 +6,24 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Royalty;
 use App\Entity\Studio;
 
 class RoyaltyController extends AbstractController
 {
+
+    public function __construct(EntityManagerInterface $em)
+    {
+        $this->em = $em;
+    }
+
     /**
      * @Route("/royalties", name="app_royalty")
      */
     public function index(): Response
     {
-        $royalties = $this->getDoctrine()
+        $royalties = $this->em
             ->getRepository(Royalty::class)
             ->findAll();
  
@@ -39,7 +46,7 @@ class RoyaltyController extends AbstractController
      */
     public function new(Request $request): Response
     {
-        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager = $this->em->getManager();
 
         $studioId = $request->request->get('studio');
         
@@ -60,7 +67,7 @@ class RoyaltyController extends AbstractController
      */
     public function show(int $studioId): Response
     {
-        $royalty = $this->getDoctrine()
+        $royalty = $this->em
             ->getRepository(Royalty::class)
             ->findRoyaltyByStudio($studioId);
  
@@ -83,7 +90,7 @@ class RoyaltyController extends AbstractController
      */
     public function delete(int $id): Response
     {
-        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager = $this->em->getManager();
         $royalty = $entityManager->getRepository(Royalty::class)->find($id);
  
         if (!$royalty) {
