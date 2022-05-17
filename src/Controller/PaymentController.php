@@ -20,6 +20,21 @@ class PaymentController extends AbstractController
     }
 
     /**
+     * @Route("/", name="app_phpInfo")
+     */
+    public function phpInfo(): Response
+    {
+
+        $data = [];
+
+        $data[] = [
+            'studioId' => phpinfo(),
+        ];
+ 
+        return $this->json($data);
+    }
+
+    /**
      * @Route("/royaltymanager/payments", name="app_payment")
      */
     public function index(): Response
