@@ -11,18 +11,12 @@
       </ul>
     </li>
     <li>
-      <a href="#getting-started">Getting Started</a>
       <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
 </details>
 
@@ -40,7 +34,6 @@ The system must meet the provided REST API specification and accept/return JSON.
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 
-
 ### Built With
 
 * [Composer](https://getcomposer.org/)
@@ -53,39 +46,48 @@ The system must meet the provided REST API specification and accept/return JSON.
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 
-
-<!-- GETTING STARTED -->
-## Getting Started
-
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
-
-
-
 ### Installation
 
-1. Clone the repo
-   ```sh
+1. Clone the repo using git clone command:
+   ```
    git clone https://github.com/ERV1304/piksel-coding-challenge
    ```
-2. Install dependencies packages via composer
-   ```sh
+2. Install dependencies packages via composer:
+   ```
    composer install
    ```
-3. Execute migration file
+   
+3. Run docker compose to load container (use sudo if you need):
+   ```
+   docker-compose up -d
+   ```
+   
+4. Find this line on '.env' file inside project:
+ ```
+DATABASE_URL="mysql://root:ERVmysql1304@mysql:3306/Coding_Challenge?serverVersion=5.7&charset=utf8mb4" 
+ ```
+ and replace for this other:
+ 
+ ```
+DATABASE_URL="mysql://root:ERVmysql1304@127.0.0.1:3306/Coding_Challenge?serverVersion=5.7&charset=utf8mb4" 
+ ```
 
+5. Execute migration file:
+ ```
+  php bin/console doctrine:migrations:execute --up "DoctrineMigrations\Version20220514090537" 
+ ```
+
+6. Load test data using fixture and json files:
+ ```
+ php bin/console doctrine:fixtures:load
+ ```
+ 
+ 7. Write the following sentence on your browser:
+  ```
+  http://localhost:80
+  ```
+ 
 <p align="right">(<a href="#top">back to top</a>)</p>
-
-
-
-<!-- USAGE EXAMPLES -->
-## Usage
-
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
 
 
 <!-- LICENSE -->
@@ -94,7 +96,6 @@ Use this space to show useful examples of how a project can be used. Additional 
 Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
-
 
 
 <!-- CONTACT -->
