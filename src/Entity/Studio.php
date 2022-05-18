@@ -14,8 +14,7 @@ class Studio
 {
     /**
      * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string", length=35)
      */
     private $id;
 
@@ -39,9 +38,16 @@ class Studio
         $this->rightsowners = new ArrayCollection();
     }
 
-    public function getId(): ?int
+    public function getId(): ?string
     {
         return $this->id;
+    }
+
+    public function setId(string $id): self
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     public function getName(): ?string

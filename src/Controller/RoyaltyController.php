@@ -63,7 +63,7 @@ class RoyaltyController extends AbstractController
     /**
      * @Route("/royaltymanager/royalty/{studioId}", name="royalty_show", methods={"GET"})
      */
-    public function show(int $studioId): Response
+    public function show(string $studioId): Response
     {
         $royalty = $this->em
             ->getRepository(Royalty::class)

@@ -22,10 +22,9 @@ class PaymentController extends AbstractController
     /**
      * @Route("/", name="app_index")
      */
-    public function entryPoint(): void
+    public function entryPoint(): Response
     {
-
-        $this->index();
+        return $this->index();
     }
 
     /**
@@ -40,25 +39,25 @@ class PaymentController extends AbstractController
         $data = [];
 
         foreach ($royalties as $royalty) {
+            
             $episodesOwned = $this->em
             ->getRepository(Rightsowner::class)
             ->findEpisodesOwnedByStudio($royalty->getStudio()->getId());
-
+            $numViewings = 0;
             foreach ($episodesOwned as $episode) {
                 $viewings = $this->em
                 ->getRepository(Viewing::class)
-                ->findViewingsByEpisode($episode->getId());
+                ->findViewingsByEpisode($episode->getEpisode()->getId());
 
-                $numViewings = count($viewings);
-
-                $data[] = [
-                    'studioId' => $royalty->getStudio()->getId(),
-                    'studio' => $royalty->getStudio()->getName(),
-                    'viewings' => $numViewings,
-                    'payment' => ($royalty->getPayment())*$numViewings,
-                ];
+                $numViewings += count($viewings);
                 
             }
+            $data[] = [
+                'studioId' => $royalty->getStudio()->getId(),
+                'studio' => $royalty->getStudio()->getName(),
+                'viewings' => $numViewings,
+                'payment' => ($royalty->getPayment())*$numViewings,
+            ];
 
         }
  
@@ -69,7 +68,7 @@ class PaymentController extends AbstractController
     /**
      * @Route("/royaltymanager/payment/{studioId}", name="payment_show", methods={"GET"})
      */
-    public function show(int $studioId): Response
+    public function show(string $studioId): Response
     {
         $royalty = $this->em
             ->getRepository(Royalty::class)

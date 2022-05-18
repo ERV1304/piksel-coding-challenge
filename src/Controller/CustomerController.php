@@ -40,7 +40,7 @@ class CustomerController extends AbstractController
     }
 
     /**
-     * @Route("/customer", name="customer_new", methods={"POST"})
+     * @Route("/royaltymanager/customer", name="customer_new", methods={"POST"})
      */
     public function new(Request $request): Response
     { 
@@ -98,7 +98,7 @@ class CustomerController extends AbstractController
     }
 
     /**
-     * @Route("/customer/{id}", name="customer_delete", methods={"DELETE"})
+     * @Route("/royaltymanager/customer/{id}", name="customer_delete", methods={"DELETE"})
      */
     public function delete(int $id): Response
     {

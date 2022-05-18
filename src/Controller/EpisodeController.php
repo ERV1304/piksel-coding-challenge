@@ -46,6 +46,7 @@ class EpisodeController extends AbstractController
     public function new(Request $request): Response
     {
         $episode = new Episode();
+        $episode->setId($request->request->get('id'));
         $episode->setName($request->request->get('name'));
  
         $this->em->persist($episode);
@@ -57,7 +58,7 @@ class EpisodeController extends AbstractController
     /**
      * @Route("/royaltymanager/episode/{id}", name="episode_show", methods={"GET"})
      */
-    public function show(int $id): Response
+    public function show(string $id): Response
     {
         $episode = $this->em
             ->getRepository(Episode::class)
@@ -79,7 +80,7 @@ class EpisodeController extends AbstractController
     /**
      * @Route("/royaltymanager/episodesOwned/{studioId}", name="episodeOwned_show", methods={"GET"})
      */
-    public function showOwned(int $studioId): Response
+    public function showOwned(string $studioId): Response
     {
         $episodesOwned = $this->em
             ->getRepository(Rightsowner::class)
@@ -107,7 +108,7 @@ class EpisodeController extends AbstractController
     /**
      * @Route("/royaltymanager/episode/{id}", name="episode_edit", methods={"PUT"})
      */
-    public function edit(Request $request, int $id): Response
+    public function edit(Request $request, string $id): Response
     {
         $episode = $this->em->getRepository(Episode::class)->find($id);
  
@@ -129,7 +130,7 @@ class EpisodeController extends AbstractController
     /**
      * @Route("/royaltymanager/episode/{id}", name="episode_delete", methods={"DELETE"})
      */
-    public function delete(int $id): Response
+    public function delete(string $id): Response
     {
         $episode = $this->em->getRepository(Episode::class)->find($id);
  

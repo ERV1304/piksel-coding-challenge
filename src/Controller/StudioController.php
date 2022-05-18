@@ -46,6 +46,7 @@ class StudioController extends AbstractController
     {
  
         $studio = new Studio();
+        $studio->setId($request->request->get('id'));
         $studio->setName($request->request->get('name'));
  
         $this->em->persist($studio);
@@ -57,7 +58,7 @@ class StudioController extends AbstractController
     /**
      * @Route("/royaltymanager/studio/{id}", name="studio_show", methods={"GET"})
      */
-    public function show(int $id): Response
+    public function show(string $id): Response
     {
         $studio = $this->em
             ->getRepository(Studio::class)
@@ -79,7 +80,7 @@ class StudioController extends AbstractController
     /**
      * @Route("/royaltymanager/studio/{id}", name="studio_edit", methods={"PUT"})
      */
-    public function edit(Request $request, int $id): Response
+    public function edit(Request $request, string $id): Response
     {
         $studio = $this->em->getRepository(Studio::class)->find($id);
  
@@ -101,7 +102,7 @@ class StudioController extends AbstractController
     /**
      * @Route("/royaltymanager/studio/{id}", name="studio_delete", methods={"DELETE"})
      */
-    public function delete(int $id): Response
+    public function delete(string $id): Response
     {
         $studio = $this->em->getRepository(Studio::class)->find($id);
  

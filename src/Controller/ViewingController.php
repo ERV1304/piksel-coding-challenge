@@ -88,7 +88,7 @@ class ViewingController extends AbstractController
     /**
      * @Route("/royaltymanager/viewings/{episodeId}", name="viewings_show", methods={"GET"})
      */
-    public function showViewings(int $episodeId): Response
+    public function showViewings(string $episodeId): Response
     {
         $viewings = $this->em
             ->getRepository(Viewing::class)

@@ -43,7 +43,7 @@ class RightsownerController extends AbstractController
     }
 
     /**
-     * @Route("/rightsowner", name="rightsowner_new", methods={"POST"})
+     * @Route("/royaltymanager/rightsowner", name="rightsowner_new", methods={"POST"})
      */
     public function new(Request $request): Response
     {
