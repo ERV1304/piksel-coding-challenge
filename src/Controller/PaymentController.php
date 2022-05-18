@@ -20,18 +20,12 @@ class PaymentController extends AbstractController
     }
 
     /**
-     * @Route("/", name="app_phpInfo")
+     * @Route("/", name="app_index")
      */
-    public function phpInfo(): Response
+    public function entryPoint(): void
     {
 
-        $data = [];
-
-        $data[] = [
-            'studioId' => phpinfo(),
-        ];
- 
-        return $this->json($data);
+        $this->index();
     }
 
     /**
