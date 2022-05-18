@@ -3,11 +3,13 @@ version: '3.8'
 services:
 ###> doctrine/doctrine-bundle ###
       mysql:
-        image: mysql:8.0
+        image: mysql:5.7
         restart: on-failure
         environment:
             - MYSQL_ROOT_PASSWORD=ERVmysql1304
             - MYSQL_DATABASE=Coding_Challenge
+        ports:
+            - '3306:3306'        
       nginx:
         image: nginx:1.19.0-alpine
         restart: on-failure
